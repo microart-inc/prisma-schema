@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model ExternalApp {
+  id           String         @id @map("_id") @db.ObjectId
+  developer    String
+  icon         String
+  name         String
+  url          String
+  tokens       Oauth[]
+  externalUsers ExternalUser[]
+}
+
+model Oauth {
+  token String      @id @map("_id")
+  app   ExternalApp @relation(fields: [appId], references: [id])
+  appId String      @db.ObjectId
+}
+
+model Session {
+  id           String         @id @map("_id") @db.ObjectId @default(auto())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  token     String
+  expires   Boolean
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id            String         @id @map("_id") @db.ObjectId @default(auto())
+  createdAt     DateTime       @default(now()) @db.Date
+  email         String         @unique
+  firstName     String
+  hash          String
+  lastName      String
+  externalUsers ExternalUser[]
+  Session       Session[]
+}
+
+model ExternalUser {
+  id     String      @id @map("_id") @db.ObjectId @default(auto())
+  user   User        @relation(fields: [userId], references: [id])
+  userId String      @db.ObjectId
+  app    ExternalApp @relation(fields: [appId], references: [id])
+  appId  String      @db.ObjectId
+}
