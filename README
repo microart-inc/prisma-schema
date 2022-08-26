@@ -1,0 +1,10 @@
+Microart.cf's Prisma Schema
+===========================
+
+microart.cf uses MongoDB under the hood in order to serve 
+dynamic content. This Prisma schema file is part of our 
+transition from "static" API endpoints to dyanmic data-
+fetching via Prisma schema's. This repository simply hosts
+the schema file for development and testing use. Note: 
+This is the same file that is deployed to the web server
+server as well.
