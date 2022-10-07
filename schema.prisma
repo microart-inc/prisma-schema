@@ -1,70 +1,54 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
+  output = "../__generated__/prisma"
 }
 
 datasource db {
-    provider = "mongodb"
-    url      = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model ExternalApp {
-    id            String         @id @map("_id") @db.ObjectId
-    developer     String
-    icon          String
-    name          String
-    url           String
-    tokens        Oauth[]
-    externalUsers ExternalUser[]
-    Analytics     Analytics[]
+  id           String         @id @map("_id") @db.ObjectId
+  developer    String
+  icon         String
+  name         String
+  url          String
+  tokens       Oauth[]
+  externalUsers ExternalUser[]
 }
 
 model Oauth {
-    token String      @id @map("_id")
-    app   ExternalApp @relation(fields: [appId], references: [id])
-    appId String      @db.ObjectId
-}
-
-model Analytics {
-    id                   String      @id @default(auto()) @map("_id") @db.ObjectId
-    app                  ExternalApp @relation(fields: [appId], references: [id])
-    appId                String      @db.ObjectId
-    properties           String      @default("")
-    time                 DateTime    @default(now())
-    ip                   String
-    userAgent            String      @default("")
-    firstContentfulPaint Int         @default(0)
-    firstPaint           Int         @default(0)
-    path                 String      @default("")
-    cookies              String      @default("")
-    vendor               String      @default("")
-    platform             String      @default("")
+  token String      @id @map("_id")
+  app   ExternalApp @relation(fields: [appId], references: [id])
+  appId String      @db.ObjectId
 }
 
 model Session {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    user      User     @relation(fields: [userId], references: [id])
-    userId    String   @db.ObjectId
-    token     String
-    expires   Boolean
-    expiresAt DateTime
-    createdAt DateTime @default(now())
+  id           String         @id @map("_id") @db.ObjectId @default(auto())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  token     String
+  expires   Boolean
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model User {
-    id            String         @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt     DateTime       @default(now()) @db.Date
-    email         String         @unique
-    firstName     String
-    hash          String
-    lastName      String
-    externalUsers ExternalUser[]
-    Session       Session[]
+  id            String         @id @map("_id") @db.ObjectId @default(auto())
+  createdAt     DateTime       @default(now()) @db.Date
+  email         String         @unique
+  firstName     String
+  hash          String
+  lastName      String
+  externalUsers ExternalUser[]
+  Session       Session[]
 }
 
 model ExternalUser {
-    id     String      @id @default(auto()) @map("_id") @db.ObjectId
-    user   User        @relation(fields: [userId], references: [id])
-    userId String      @db.ObjectId
-    app    ExternalApp @relation(fields: [appId], references: [id])
-    appId  String      @db.ObjectId
+  id     String      @id @map("_id") @db.ObjectId @default(auto())
+  user   User        @relation(fields: [userId], references: [id])
+  userId String      @db.ObjectId
+  app    ExternalApp @relation(fields: [appId], references: [id])
+  appId  String      @db.ObjectId
 }
